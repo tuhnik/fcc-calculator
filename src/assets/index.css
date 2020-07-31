@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  margin-top: 1em;
+  font-size: 4em;
+}
+
+#display {
+  text-align: right;
+  border-radius: 4px;
+  margin-bottom: 3px;
+  background: #01302b;
+  font-family: monospace;
+  color: white;
+  min-height: 80px;
+  padding: 0 10px;
+}
