@@ -2,8 +2,7 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'Inconsolata', monospace;
 }
 
 .App {
@@ -21,7 +20,7 @@ body {
   border-radius: 4px;
   margin-bottom: 3px;
   background: #01302b;
-  font-family: monospace;
+  font-family: 'Inconsolata', monospace;
   color: white;
   min-height: 80px;
   padding: 0 10px;

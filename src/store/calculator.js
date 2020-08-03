@@ -17,45 +17,42 @@ const { setExpression } = calculatorSlice.actions;
 export const calculate = value => (dispatch, getState) => {
   const { expression } = getState().calculator;
 
-  if (value === '0' && expression === '0') {
-    return;
+  const isOperator = value.match(/[+\-*/]/g);
+  const expTrailingOperators = expression.match(/[+\-*/]+$/g)?.[0];
+  const expEndsWithMinus = expression.charAt(expression.length - 1) === '-';
+
+  if (expTrailingOperators?.length === 2 && expEndsWithMinus && isOperator) {
+    if (value === '-') return;
+    const nextExpression = expression.replace(/.{2}$/, value);
+    return dispatch(setExpression(nextExpression));
   }
 
-  if (value.match(/[+/*]/gi) && expression === '0') {
-    return;
+  if (expression === '0') {
+    if (value === '0' || value.match(/[+/*]/g)) return;
   }
 
-  if (value === '.' && expression === '0') {
-    return dispatch(setExpression('0.'));
+  if (value === '-' && expression === '-') return;
+
+  if (value === '.') {
+    if (expression === '0') return dispatch(setExpression('0.'));
+    if (expression.match(/\.\d+$|\.$/g)) return;
   }
 
-  if (value === '.' && expression.match(/\.\d$/gi)) {
-    return;
-  }
-
-  if (value === '.' && expression.match(/\.$/gi)) {
-    return;
-  }
-
-  if (value === '=' && expression.match(/\.$/gi)) {
-    return;
-  }
-
-  if (value.match(/[+-/*]/gi) && expression.match(/[+-/*]$/gi)) {
-    if (value !== '-' && expression.match(/[+/*]-$/gi)) {
+  if (value.match(/[+-/*]/gi) && expression.match(/[+-/*]$/g)) {
+    if (value !== '-' && expression.match(/[+/*]-$/g)) {
       return dispatch(setExpression(expression.replace(/.{2}$/, value)));
     }
-    if (value === '-' && expression.match(/[+/*-]$/gi)) {
+    if (value === '-' && expression.match(/[+/*-]$/g)) {
       return dispatch(setExpression(expression + '-'));
     }
     return dispatch(setExpression(expression.replace(/.$/, value)));
   }
 
-  let nextExpression;
-
   if (value === 'AC') {
     return dispatch(setExpression('0'));
   }
+
+  let nextExpression;
 
   if (expression === '0') {
     nextExpression = value.toString();
@@ -64,18 +61,20 @@ export const calculate = value => (dispatch, getState) => {
   }
 
   if (value === '=') {
-    const trimmedExpression = trimExpression(expression);
+    const formattedExpression = removeTrailingDot(expression).replace(
+      '--',
+      '- -'
+    );
     // eslint-disable-next-line no-eval
-    const result = eval(trimmedExpression).toString();
-    dispatch(setExpression(result));
-  } else {
-    dispatch(setExpression(nextExpression));
+    const result = eval(formattedExpression).toString();
+    return dispatch(setExpression(result));
   }
+  dispatch(setExpression(nextExpression));
 };
 
-const trimExpression = expression => {
+const removeTrailingDot = expression => {
   if (expression.match(/[+-/*]$/gi)) {
-    return trimExpression(expression.replace(/.$/, ''));
+    return removeTrailingDot(expression.replace(/.$/, ''));
   }
   return expression;
 };
