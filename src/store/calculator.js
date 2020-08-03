@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { removeTrailingDot } from '../utils';
 
 export const calculatorSlice = createSlice({
   name: 'calculator',
@@ -70,13 +71,6 @@ export const calculate = value => (dispatch, getState) => {
     return dispatch(setExpression(result));
   }
   dispatch(setExpression(nextExpression));
-};
-
-const removeTrailingDot = expression => {
-  if (expression.match(/[+-/*]$/gi)) {
-    return removeTrailingDot(expression.replace(/.$/, ''));
-  }
-  return expression;
 };
 
 export default calculatorSlice.reducer;
